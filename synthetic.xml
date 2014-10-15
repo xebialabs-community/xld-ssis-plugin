@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<synthetic xmlns="http://www.xebialabs.com/deployit/synthetic" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.xebialabs.com/deployit/synthetic synthetic.xsd">
+    <type container-type="sql.MsSqlClient" deployable-type="mssql.ISPackage" description="Published SSIS dtsx package" extends="powershell.ExtensiblePowerShellDeployedArtifact" type="mssql.DeployedISPackage">
+        <generate-deployable description="Dtsx file containing the MS SSIS package" extends="powershell.BasePowerShellDeployableFileArtifact" type="mssql.ISPackage"/>
+        <!-- hidden -->
+        <property default="ssis/runtime/ssis-setup.ps1" hidden="true" kind="list_of_string" name="libraryScripts"/>
+        <property default="ssis/deploy-ispackage.ps1" hidden="true" name="createScript"/>
+        <property default="54" hidden="true" kind="integer" name="createOrder"/>
+        <property default="Copy" hidden="true" name="createVerb"/>
+        <property default="iis/deploy-ispackage.ps1" hidden="true" name="modifyScript"/>
+        <property default="54" hidden="true" kind="integer" name="modifyOrder"/>
+        <property default="Copy" hidden="true" name="modifyVerb"/>
+        <property default="ssis/destroy-ispackage.ps1" hidden="true" name="destroyScript"/>
+        <property default="46" hidden="true" kind="integer" name="destroyOrder"/>
+        <property default="Delete" hidden="true" name="destroyVerb"/>
+        <!-- public -->
+        <property name="serverInstance" required="true"/>
+        <property name="packageFullName" required="true"/>
+    </type>
+    <type container-type="sql.MsSqlClient" deployable-type="mssql.ISProject" description="Published SSIS project" extends="powershell.ExtensiblePowerShellDeployedArtifact" type="mssql.DeployedISProject">
+        <generate-deployable description="ISPAC file containing the MS SSIS project" extends="powershell.BasePowerShellDeployableFileArtifact" type="mssql.ISProject"/>
+        <!-- hidden -->
+        <property default="ssis/deploy-isproject.ps1" hidden="true" name="createScript"/>
+        <property default="54" hidden="true" kind="integer" name="createOrder"/>
+        <property default="Copy" hidden="true" name="createVerb"/>
+        <property default="iis/deploy-isproject.ps1" hidden="true" name="modifyScript"/>
+        <property default="54" hidden="true" kind="integer" name="modifyOrder"/>
+        <property default="Copy" hidden="true" name="modifyVerb"/>
+        <property default="ssis/destroy-isproject.ps1" hidden="true" name="destroyScript"/>
+        <property default="46" hidden="true" kind="integer" name="destroyOrder"/>
+        <property default="Delete" hidden="true" name="destroyVerb"/>
+        <!-- public -->
+        <property name="projectName" required="true"/>
+        <property name="folderName" required="true"/>
+        <property default="localhost" name="serverName" required="true"/>
+        <property default="true" kind="boolean" name="catalogShared" required="true"/>
+        <property default="SSISDB" name="catalogName" required="false"/>
+        <property name="catalogPassword" password="true" required="false"/>
+        <property as-containment="true" description="Environments for this project" kind="set_of_ci" name="environments" referenced-type="mssql.DeployedEnvironment"/>
+        <property as-containment="true" description="Jobs for this project" kind="set_of_ci" name="jobs" referenced-type="mssql.DeployedJob"/>
+    </type>
+    <type-modification type="mssql.ISProject">
+        <property as-containment="true" description="Environments for this project" kind="set_of_ci" name="environments" referenced-type="mssql.Environment"/>
+        <property as-containment="true" description="Jobs for this project" kind="set_of_ci" name="jobs" referenced-type="mssql.Job"/>
+    </type-modification>
+
+    <type container-type="mssql.DeployedISProject" deployable-type="mssql.Environment" description="SSIS Project environment" extends="udm.BaseEmbeddedDeployed" type="mssql.DeployedEnvironment">
+        <generate-deployable description="Specification of an SSIS environment" extends="udm.BaseEmbeddedDeployable" type="mssql.Environment"/>
+        <property name="environmentName" required="true"/>
+        <property name="environmentDescription" required="false"/>
+        <property as-containment="true" description="Variables for this environment" kind="set_of_ci" name="variables" referenced-type="mssql.DeployedEnvironmentVariable"/>
+    </type>
+    <type-modification type="mssql.Environment">
+        <property as-containment="true" description="Variables for this environment" kind="set_of_ci" name="variables" referenced-type="mssql.EnvironmentVariable"/>
+    </type-modification>
+    <type container-type="mssql.DeployedEnvironment" deployable-type="mssql.EnvironmentVariable" description="SSIS environment variable" extends="udm.BaseEmbeddedDeployed" type="mssql.DeployedEnvironmentVariable">
+        <generate-deployable description="SSIS environment variable" extends="udm.BaseEmbeddedDeployable" type="mssql.EnvironmentVariable"/>
+        <property name="variableName" required="true"/>
+        <property default="String" name="variableType" required="false"/>
+        <property default="" name="defaultValue" required="false"/>
+        <property default="false" kind="boolean" name="sensitivity" required="true"/>
+        <property default="" name="description" required="false"/>
+        <property default="true" kind="boolean" name="includeProjectParameterReference" required="true"/>
+    </type>
+
+    <type container-type="mssql.DeployedISProject" deployable-type="mssql.Job" description="SSIS Project job" extends="udm.BaseEmbeddedDeployed" type="mssql.DeployedJob">
+        <generate-deployable description="Specification of an SSIS job" extends="udm.BaseEmbeddedDeployable" type="mssql.Job"/>
+        <property name="jobName" required="true"/>
+        <property default="true" kind="boolean" name="jobEnabled" required="false"/>
+        <property default="1" kind="integer" name="startStepID" required="false"/>
+        <property default="0" kind="integer" name="eventLogLevel" required="false"/>
+        <property default="0" kind="integer" name="emailLevel" required="false"/>
+        <property default="0" kind="integer" name="netSendLevel" required="false"/>
+        <property default="0" kind="integer" name="pageLevel" required="false"/>
+        <property default="0" kind="integer" name="deleteLevel" required="false"/>
+        <property name="jobDescription" required="false"/>
+        <property default="sa" name="ownerLoginName" required="true"/>
+        <property name="jobCategory" required="false"/>
+        <property as-containment="true" description="Jobsteps for this job" kind="set_of_ci" name="jobSteps" referenced-type="mssql.DeployedJobStep"/>
+        <property as-containment="true" description="Jobschedules for this job" kind="set_of_ci" name="jobSchedules" referenced-type="mssql.DeployedJobSchedule"/>
+    </type>
+    <type-modification type="mssql.Job">
+        <property as-containment="true" description="Jobsteps for this job" kind="set_of_ci" name="jobSteps" referenced-type="mssql.JobStep"/>
+        <property as-containment="true" description="Jobschedules for this job" kind="set_of_ci" name="jobSchedules" referenced-type="mssql.JobSchedule"/>
+    </type-modification>
+    <type container-type="mssql.DeployedJob" deployable-type="mssql.JobStep" description="SSIS Jobstep" extends="udm.BaseEmbeddedDeployed" type="mssql.DeployedJobStep">
+        <generate-deployable description="SSIS Job step" extends="udm.BaseEmbeddedDeployable" type="mssql.JobStep"/>
+        <property name="stepName" required="true"/>
+        <property kind="integer" name="stepID" required="true"/>
+        <property default="SSIS" name="subSystem" required="true"/>
+        <property name="command" required="true"/>
+        <property default="master" name="databaseName" required="true"/>
+        <property name="proxyName" required="false"/>
+        <property default="0" kind="integer" name="jobStepFlags" required="true"/>
+        <property default="0" kind="integer" name="commandExecutionSuccessCode" required="false"/>
+        <property default="QuitWithSuccess" name="onSuccessAction" required="true"/>
+        <property kind="integer" name="onSuccessStepID" required="true"/>
+        <property default="QuitWithFailure" name="onFailAction" required="true"/>
+        <property kind="integer" name="onFailStepID" required="true"/>
+        <property default="0" kind="integer" name="retryAttempts" required="false"/>
+        <property default="0" kind="integer" name="retryInterval" required="false"/>
+        <property default="0" kind="integer" name="osRunPriority" required="false"/>
+    </type>
+    <type container-type="mssql.DeployedJob" deployable-type="mssql.JobSchedule" description="SSIS Jobschedule" extends="udm.BaseEmbeddedDeployed" type="mssql.DeployedJobSchedule">
+        <generate-deployable description="SSIS Job shedule" extends="udm.BaseEmbeddedDeployable" type="mssql.JobSchedule"/>
+        <property name="jobScheduleName" required="false"/>
+        <property name="frequencyTypes" default="AutoStart" required="false"/>
+        <property name="activeStartDate" required="false">
+            <rule type="regex" pattern="^((0[1-9]|[12][0-9]|3[01])[/](0[1-9]|1[012])[/]\d{4}) ([0-1][0-9]|2[0-4]):([0-5][0-9]):([0-5][0-9])$"
+               message="Invalid date time format, input should adhere to 'dd/mm/yyyy hh:mm:ss'."/>
+        </property>
+    </type>
+</synthetic>
