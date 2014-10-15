@@ -3,3 +3,12 @@ notifications:
   hipchat:
     rooms:
       secure: eMr2cQtvrrWfYwZJ8mompiovOkNNFSzs7RuqKZtsiGP1bEDRTMBQ7qrYrKKd2ir+4uVjn8xS0AeHQYLhlHhl+ph0qTjV36Y+SXFqtk7whcH9FoMtvjqRv742XQUZZCT5ltaEANJl7q4aid7PvtL23Mwdsp032O37QZMl/JuamDM=
+deploy:
+  provider: releases
+  api_key:
+    secure: yn5faZF82WBoNIfCTJ1+cbzFU4NBAccOB0dbikoIRDN+x479NNwc0hWE7kCUzSU8cN0o+AqjJJ/2gpRoaS0YZh0qiQvtWdrpNHoox2iYLdbn07BRJXM3iap0XH3OI4qOfzqv1/0odwzkb/+nrwBRDKGtruNPgbw9GD8jATP9FlI=
+  file: build//libs/xld-ssis-plugin-2.0.0.jar
+  skip_cleanup: true
+  on:
+    all_branches: true
+    tags: true
