@@ -1,15 +1,10 @@
-buildscript {
-  repositories {
-    jcenter()
-  }
-  dependencies {
-    classpath "nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0"
-  }
+plugins {
+    id "com.github.hierynomus.license" version "0.11.0"
+    id "com.xebialabs.xldp" version "1.0.5"
 }
 
-version = '2.0.1'
+version = '2.0.2'
 
-apply plugin: "com.github.hierynomus.license"
 apply plugin: 'java'
 
 license {
