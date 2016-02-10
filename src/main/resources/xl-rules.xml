@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+    Note: If you modify this file and automatic reloading is disabled in `planner.conf`, you must restart the XL Deploy server.
+-->
+<rules xmlns="http://www.xebialabs.com/xl-deploy/xl-rules">
+    <!-- hidden -->
+    <rule name="mssql.DeployedDacpac.CREATE_MODIFY" scope="deployed">
+        <conditions>
+            <type>mssql.DeployedDacpac</type>
+            <operation>CREATE</operation>
+            <operation>MODIFY</operation>
+        </conditions>
+        <steps>
+            <powershell>
+                <script>ssis/deploy-dacpac.ps1</script>
+                <order>54</order>
+                <description expression="true">"Deploying %s to %s" % (deployed.name, deployed.container.name)</description>
+            </powershell>
+        </steps>
+    </rule>
+    <rule name="mssql.DeployedDacpac.DESTROY" scope="deployed">
+        <conditions>
+            <type>mssql.DeployedDacpac</type>
+            <operation>DESTROY</operation>
+        </conditions>
+        <steps>
+            <powershell>
+                <script>ssis/destroy-dacpac.ps1</script>
+                <order>46</order>
+                <description expression="true">"Undeploying %s from %s" % (previousDeployed.name, previousDeployed.container.name)</description>
+            </powershell>
+        </steps>
+    </rule>
+</rules>

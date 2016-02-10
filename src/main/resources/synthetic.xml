@@ -119,28 +119,26 @@
     </type>
 
     <type container-type="sql.MsSqlClient" deployable-type="mssql.Dacpac" description="SQL Server dacpac" extends="powershell.ExtensiblePowerShellDeployedArtifact" type="mssql.DeployedDacpac">
-        <generate-deployable description="Dacpac file" extends="powershell.BasePowerShellDeployableFileArtifact" type="mssql.Dacpac"/>
-        <!-- hidden -->
-        <property default="ssis/deploy-dacpac.ps1" hidden="true" name="createScript"/>
-        <property default="54" hidden="true" kind="integer" name="createOrder"/>
-        <property default="Deploy" hidden="true" name="createVerb"/>
-        <property default="ssis/deploy-dacpac.ps1" hidden="true" name="modifyScript"/>
-        <property default="54" hidden="true" kind="integer" name="modifyOrder"/>
-        <property default="Deploy" hidden="true" name="modifyVerb"/>
-        <property default="ssis/destroy-dacpac.ps1" hidden="true" name="destroyScript"/>
-        <property default="46" hidden="true" kind="integer" name="destroyOrder"/>
-        <property default="Drop" hidden="true" name="destroyVerb"/>
+        <generate-deployable description="Dacpac file" extends="udm.BaseDeployableArchiveArtifact" type="mssql.Dacpac"/>
         <!-- public -->
         <property name="serverName" required="true"/>
         <property name="targetDatabase" required="true"/>
         <property name="userName" required="false"/>
         <property name="password" password="true" required="false"/>
         <property name="includeCompositeObjects" kind="boolean" required="false" default="true"/>
+        <property name="includeTransactionalScripts" kind="boolean" required="false" default="true"/>
         <property name="ignoreFileSize" kind="boolean" required="false" default="false"/>
-        <property name="includeCompositeObjects" kind="boolean" required="false" default="true"/>
         <property name="ignoreFilegroupPlacement" kind="boolean" required="false" default="false"/>
         <property name="ignoreFileAndLogFilePath" kind="boolean" required="false" default="false"/>
         <property name="allowIncompatiblePlatform" kind="boolean" required="false" default="true"/>
+        <property name="blockOnPossibleDataLoss" kind="boolean" required="false" default="true"/>
+        <property name="dropObjectsNotInSource" kind="boolean" required="false" default="true"/>
+        <property name="generateSmartDefaults" kind="boolean" required="false" default="true"/>
+        <property name="sourceEncryptConnection" kind="boolean" required="false" default="true"/>
+        <property name="sourceTrustServerCertificate" kind="boolean" required="false" default="true"/>
+        <property name="excludeObjectTypes" required="false" default="DatabaseTriggers;Permissions;RoleMembership;Rules;Users"/>
+
+
         <property name="dacDllPath" required="false" default="C:\Program Files (x86)\Microsoft SQL Server\110\DAC\bin\Microsoft.SqlServer.Dac.dll"/>
     </type>
 </synthetic>

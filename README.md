@@ -41,12 +41,18 @@ A SSIS project is bundled in a single ispac file
 The plugin copies the provided ipac file (the artefact) to the container's server. On the server it connects to the SSIS instance. In the SSIS instance it tries to connect to the provided SSIS catalog (default value is SSISDB). If the catalog isn't shared it's removed. If no catalog is found a new one is created with the provided password. 
 A folder is created with the provided name (if a folder with that name is found it is used). 
 Within the folder:
-	*The project with the given projectName is created, if a project with that name is found it is first removed. 
-	*The sepcified environments are created, if an environment exists it is first removed.
-	*Specified environment variables are created and if specified a project parameter is created with a reference
-	*The environment is referenced to the project
+
+* The project with the given projectName is created, if a project with that name is found it is first removed. 
+* The sepcified environments are created, if an environment exists it is first removed.
+* Specified environment variables are created and if specified a project parameter is created with a reference
+* The environment is referenced to the project
 
 When the ISProject is destroyed the catalog is removed if it is not shared. Otherwise only project & environments are removed. If the folderName is empty after project & environment removal it is also removed.
 
 A database package is bundled in a single dacpac file.
 The plugin copies the provided dacpac file (the artefact) to the container's server. Where it is deployed using powershell. Requires powershell v3, which is checked by the script. It also requires a trusted connection, so native winrm (available when XL Deploys runs on windows machine) or a winrs proxy with credential delegation is needed.
+You might need to install the following on the target container you're running the powershell:
+
+* [DacFramework.msi](https://www.microsoft.com/en-us/download/details.aspx?id=42293)
+* [SQLDom.msi](https://www.microsoft.com/en-us/download/details.aspx?id=42295)
+* [SQLSysClrTypes.msi](https://www.microsoft.com/en-us/download/details.aspx?id=42295)

@@ -8,6 +8,8 @@ if($PSVersionTable.PSVersion.major -lt 3) {
 $fullDacPacPath = $deployed.file
 $SqlServer      = $deployed.serverName
 $TargetDatabase = $deployed.targetDatabase
+$TrustedConnection = $deployed.sourceTrustServerCertificate
+$EncryptConnection  = $deployed.sourceEncryptConnection
 
 $assemblylist =
 "Microsoft.SqlServer.Smo",
@@ -24,16 +26,25 @@ foreach ($asm in $assemblylist)
     $asm = [System.Reflection.Assembly]::LoadWithPartialName($asm)
 }
 
-add-type -path $deployed.dacDllPath
-
+try
+{
+    add-type -path $deployed.dacDllPath
+}
+catch
+{
+    Write-Host -foreground yellow "Exception";
+    $Error | format-list -force
+    Write-Host -foreground red $Error[0].Exception.LoaderExceptions;
+    Exit 1
+}
 Write-Host "Deploying the DB with the following settings"
 Write-Host "SQL Server: $SqlServer"
 Write-Host "Target Database: $TargetDatabase"
 
-$connectionString = "server=$SqlServer;Trusted_Connection=True;"
+$connectionString = "server=$SqlServer;Trusted_Connection=$TrustedConnection;Encrypt=$EncryptConnection"
 if($deployed.userName -and $deployed.password){
     Write-Host "Using provided credentials for user $($deployed.userName)."
-    $connectionString = "server=$SqlServer;User Id=$($deployed.userName);Password=$($deployed.password)"
+    $connectionString = "server=$SqlServer;Trusted_Connection=$TrustedConnection;Encrypt=$EncryptConnection;User Id=$($deployed.userName);Password=$($deployed.password)"
 }
 
 $d = new-object Microsoft.SqlServer.Dac.DacServices ($connectionString)
@@ -51,8 +62,18 @@ $DeployOptions.IgnoreFileSize            = $deployed.ignoreFileSize
 $DeployOptions.IgnoreFilegroupPlacement  = $deployed.ignoreFilegroupPlacement
 $DeployOptions.IgnoreFileAndLogFilePath  = $deployed.ignoreFileAndLogFilePath
 $DeployOptions.AllowIncompatiblePlatform = $deployed.allowIncompatiblePlatform
+$DeployOptions.BlockOnPossibleDataLoss   = $deployed.blockOnPossibleDataLoss
+$DeployOptions.DropObjectsNotInSource    = $deployed.dropObjectsNotInSource
+$DeployOptions.GenerateSmartDefaults     = $deployed.generateSmartDefaults
+$DeployOptions.IncludeTransactionalScripts = $deployed.includeTransactionalScripts
+$DeployOptions.ExcludeObjectTypes        = new[]
+{
+    ObjectType.DatabaseTriggers, ObjectType.Permissions, ObjectType.RoleMembership,
+    ObjectType.Users, ObjectType.Rules
+}
 
 $d.Deploy($dp, $TargetDatabase, $true, $DeployOptions)
+
 
 # clean up event
 unregister-event -source "msg"
