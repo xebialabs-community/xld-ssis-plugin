@@ -109,7 +109,7 @@
         <property default="0" kind="integer" name="osRunPriority" required="false"/>
     </type>
     <type container-type="mssql.DeployedJob" deployable-type="mssql.JobSchedule" description="SSIS Jobschedule" extends="udm.BaseEmbeddedDeployed" type="mssql.DeployedJobSchedule">
-        <generate-deployable description="SSIS Job shedule" extends="udm.BaseEmbeddedDeployable" type="mssql.JobSchedule"/>
+        <generate-deployable description="SSIS Job schedule" extends="udm.BaseEmbeddedDeployable" type="mssql.JobSchedule"/>
         <property name="jobScheduleName" required="false"/>
         <property name="frequencyTypes" default="AutoStart" required="false"/>
         <property name="activeStartDate" required="false">
