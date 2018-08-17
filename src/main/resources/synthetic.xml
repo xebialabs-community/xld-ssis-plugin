@@ -30,7 +30,7 @@
         <property default="ssis/deploy-isproject.ps1" hidden="true" name="createScript"/>
         <property default="54" hidden="true" kind="integer" name="createOrder"/>
         <property default="Copy" hidden="true" name="createVerb"/>
-        <property default="iis/deploy-isproject.ps1" hidden="true" name="modifyScript"/>
+        <property default="ssis/deploy-isproject.ps1" hidden="true" name="modifyScript"/>
         <property default="54" hidden="true" kind="integer" name="modifyOrder"/>
         <property default="Copy" hidden="true" name="modifyVerb"/>
         <property default="ssis/destroy-isproject.ps1" hidden="true" name="destroyScript"/>
