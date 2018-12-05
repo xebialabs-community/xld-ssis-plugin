@@ -17,7 +17,7 @@
 [xld-ssis-plugin-code-climate-url]: https://codeclimate.com/github/xebialabs-community/xld-ssis-plugin/maintainability
 
 
-# Overview #
+# Overview
 
 This document describes the functionality provided by the SSIS plugin.
 
@@ -43,12 +43,12 @@ Place the plugin JAR file into your `DEPLOYIT_SERVER_HOME/plugins` directory.
 
 # Usage
 
-An SSIS package is bundled in a single dtsx file.
+## An SSIS package is bundled in a single dtsx file.
 
 The plugin copies the provided dtsx file (the artefact) to the container's server. From there is determines the version of SQL Server and uses that to determine the location of the dtutil utility.
 The dtsx package is deployed using the SQL Server dtutil utility to the provided server and path.
 
-A SSIS project is bundled in a single ispac file
+## A SSIS project is bundled in a single ispac file
 
 The plugin copies the provided ipac file (the artefact) to the container's server. On the server it connects to the SSIS instance. In the SSIS instance it tries to connect to the provided SSIS catalog (default value is SSISDB). If the catalog isn't shared it's removed. If no catalog is found a new one is created with the provided password.
 A folder is created with the provided name (if a folder with that name is found it is used).
@@ -61,11 +61,24 @@ Within the folder:
 
 When the ISProject is destroyed the catalog is removed if it is not shared. Otherwise only project & environments are removed. If the folderName is empty after project & environment removal it is also removed.
 
-A database package is bundled in a single dacpac file.
-The plugin copies the provided dacpac file (the artefact) to the container's server. Where it is deployed using powershell. Requires powershell v3, which is checked by the script. It also requires a trusted connection, so native winrm (available when XL Deploys runs on windows machine) or a winrs proxy with credential delegation is needed.
+## A database package is bundled in a single dacpac file.
+
+The plugin copies the provided *dacpac* file (the artefact) to the container's server. Where it is deployed using powershell. Requires powershell v3, which is checked by the script. It also requires a trusted connection, so native winrm (*available when XL Deploys runs on windows machine*) or a winrs proxy with credential delegation is needed.
 You might need to install the following on the target container you're running the powershell:
 
-# References
 * [DacFramework.msi](https://www.microsoft.com/en-us/download/details.aspx?id=42293)
 * [SQLDom.msi](https://www.microsoft.com/en-us/download/details.aspx?id=42295)
 * [SQLSysClrTypes.msi](https://www.microsoft.com/en-us/download/details.aspx?id=42295)
+
+# References
+
+* **dtsx packages**
+	* [Run an SSIS package with PowerShell](https://docs.microsoft.com/en-us/sql/integration-services/ssis-quickstart-run-powershell?view=sql-server-2017)
+	* [Execute an SSIS Package from Powershell](https://gallery.technet.microsoft.com/scriptcenter/Execute-an-SSIS-Package-1105aad4)
+* **ispac package**
+	* [Deploy an SSIS project with PowerShell](https://docs.microsoft.com/en-us/sql/integration-services/ssis-quickstart-deploy-powershell?view=sql-server-2017)
+	* [Publish to SSIS Catalog using PowerShell](https://www.mattmasson.com/2012/06/publish-to-ssis-catalog-using-powershell/)
+* **dacpac packages**
+	* [Microsoft.SqlServer.Dac Namespace](https://docs.microsoft.com/en-us/dotnet/api/microsoft.sqlserver.dac?view=sql-dacfx-140.3881.1)
+	* [Publishing DACPACs with Powershell](https://social.msdn.microsoft.com/forums/sqlserver/en-US/7d01a0cf-1a1a-4692-aaee-10eda7b3553b/publishing-dacpacs-with-powershell)
+	* [Data-tier Applications](https://docs.microsoft.com/en-us/sql/relational-databases/data-tier-applications/data-tier-applications?view=sql-server-2017)

@@ -1,3 +1,12 @@
+#
+# Copyright 2018 XEBIALABS
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
 #######################
 
 $ErrorActionPreference = "Stop"
@@ -13,11 +22,11 @@ $exitCode = @{
 function Get-SqlVersion
 {
     param($ServerInstance)
-    
+
     Write-Host "Getting SQL Server version for [$ServerInstance]."
-    
+
     #write-verbose "sqlcmd -S `"$ServerInstance`" -d `"master`" -Q `"SET NOCOUNT ON; SELECT SERVERPROPERTY('ProductVersion')`" -h -1 -W"
-    
+
     $SqlVersion = sqlcmd -S "$ServerInstance" -d "master" -Q "SET NOCOUNT ON; SELECT SERVERPROPERTY('ProductVersion')" -h -1 -W
 
     if ($lastexitcode -ne 0) {
@@ -27,7 +36,7 @@ function Get-SqlVersion
     else {
         $SqlVersion
     }
-    
+
 } #Get-SqlVersion
 
 #######################
@@ -66,14 +75,14 @@ function Set-DtutilPath
     else {
         $Script:dtutil += 'dtutil.exe'
     }
-    
+
 } #Set-DtutilPath
-  
+
 #######################
 function install-package
 {
     param($DtsxFullName, $ServerInstance, $PackageFullName)
-    
+
     $result = & $Script:dtutil /File "$DtsxFullName" /DestServer "$ServerInstance" /Copy SQL`;"$PackageFullName" /Quiet
     $result = $result -join "`n"
 
@@ -88,7 +97,7 @@ function install-package
 function remove-package
 {
     param($ServerInstance, $PackageFullName)
-    
+
     $result = & $Script:dtutil /SourceServer "$ServerInstance" /SQL "$PackageFullName" /Delete /Quiet
     $result = $result -join "`n"
 
@@ -128,7 +137,7 @@ function test-packagepath
     param($ServerInstance, $PackageFullName)
 
     #write-verbose "$Script:dtutil /SourceServer `"$ServerInstance`" /SQL `"$PackageFullName`" /EXISTS"
-    
+
     $result = & $Script:dtutil /SourceServer "$ServerInstance" /SQL "$PackageFullName" /EXISTS
 
     if ($lastexitcode -eq 0 -and $result -and $result[4] -eq "The specified package exists.") {
@@ -162,7 +171,7 @@ function Get-FolderList
 
     if ($PackageFullName -match '\\') {
         $folders = $PackageFullName  -split "\\"
-        0..$($folders.Length -2) | foreach { 
+        0..$($folders.Length -2) | foreach {
         new-object psobject -property @{
             Parent=$(if($_-gt 0) { $($folders[0..$($_ -1)] -join "\") } else { "\" })
             FullPath=$($folders[0..$_] -join "\")

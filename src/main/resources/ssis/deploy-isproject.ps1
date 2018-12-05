@@ -1,3 +1,12 @@
+#
+# Copyright 2018 XEBIALABS
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
 #Variables
 $ProjectFilePath = $deployed.file
 $ProjectName     = $deployed.projectName
@@ -7,7 +16,7 @@ $CatalogName     = $deployed.catalogName
 $CatalogPW       = $deployed.catalogPassword
 
 # Load the required assemblies
-$assemblylist = 
+$assemblylist =
 "Microsoft.SqlServer.Management.IntegrationServices",
 "Microsoft.SqlServer.Smo",
 "Microsoft.SqlServer.SMOEnum"
@@ -16,34 +25,34 @@ foreach ($asm in $assemblylist)
 {
     $asm = [System.Reflection.Assembly]::LoadWithPartialName($asm) | Out-Null
 }
- 
+
 # Store the IntegrationServices Assembly namespace to avoid typing it every time
 $ISNamespace = "Microsoft.SqlServer.Management.IntegrationServices"
- 
+
 Write-Host "Connecting to server ..."
- 
+
 # Create a connection to the server
 $sqlConnectionString = "Data Source=$RPTServerName;Initial Catalog=master;Integrated Security=SSPI;"
 $sqlConnection = New-Object System.Data.SqlClient.SqlConnection $sqlConnectionString
- 
+
 # Create the Integration Services object
 $integrationServices = New-Object $ISNamespace".IntegrationServices" $sqlConnection
 $catalog = $integrationServices.Catalogs[$CatalogName]
 
-# Drop the existing catalog if not shared            
- if (($catalog -and !$deployed.catalogShared) -or !$catalog)             
- {             
+# Drop the existing catalog if not shared
+ if (($catalog -and !$deployed.catalogShared) -or !$catalog)
+ {
 	if($catalog -and !$deployed.catalogShared)
 	{
-		Write-Host "Removing previous catalog ..."            
-		$catalog.Drop() 
+		Write-Host "Removing previous catalog ..."
+		$catalog.Drop()
 	}
-	
-	# Provision a new SSIS Catalog            
-	Write-Host "Creating new SSISDB Catalog ..."            
-	$catalog = New-Object $ISNamespace".Catalog" ($integrationServices, $CatalogName, $CatalogPW)            
-	$catalog.Create() 				
-}  
+
+	# Provision a new SSIS Catalog
+	Write-Host "Creating new SSISDB Catalog ..."
+	$catalog = New-Object $ISNamespace".Catalog" ($integrationServices, $CatalogName, $CatalogPW)
+	$catalog.Create()
+}
 
 $folder = $catalog.Folders[$FolderName]
 if ($folder) {
@@ -71,9 +80,9 @@ $project = $folder.Projects[$ProjectName]
 foreach ($environment in $deployed.environments) {
 	$EnvironmentName = $environment.environmentName
 	#Drop an environment if already exists
-	if ($folder.Environments[$EnvironmentName]) { 
+	if ($folder.Environments[$EnvironmentName]) {
 		Write-Host "Dropping existing environment [$EnvironmentName]"
-		$folder.Environments[$EnvironmentName].Drop() 
+		$folder.Environments[$EnvironmentName].Drop()
 	}
 
 	Write-Host "Creating environment [$EnvironmentName]"
@@ -84,13 +93,13 @@ foreach ($environment in $deployed.environments) {
 		Write-Host "Adding environment variable $($envvar.variableName)"
 		# Adding variable to our environment
 		# Constructor args: variable name, type, default value, sensitivity, description
-		$projectEnvironment.Variables.Add($envvar.variableName, $envvar.variableType, $envvar.defaultValue, $envvar.sensitivity, $envvar.description) 
-	    if($envvar.includeProjectParameterReference){ 
+		$projectEnvironment.Variables.Add($envvar.variableName, $envvar.variableType, $envvar.defaultValue, $envvar.sensitivity, $envvar.description)
+	    if($envvar.includeProjectParameterReference){
 	    	Write-Host "Including project parameter reference to $($envvar.variableName)"
-	    	$project.Parameters[$envvar.variableName].Set([Microsoft.SqlServer.Management.IntegrationServices.ParameterInfo+ParameterValueType]::Referenced, $envvar.variableName) 
-	    }          
-	}           
-	$projectEnvironment.Alter()            
+	    	$project.Parameters[$envvar.variableName].Set([Microsoft.SqlServer.Management.IntegrationServices.ParameterInfo+ParameterValueType]::Referenced, $envvar.variableName)
+	    }
+	}
+	$projectEnvironment.Alter()
 
 	Write-Host "Adding environment reference to project ..."
 	# making project refer to this environment
