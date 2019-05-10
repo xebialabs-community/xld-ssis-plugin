@@ -6,7 +6,7 @@ notifications:
 deploy:
   provider: releases
   api_key:
-    secure: yn5faZF82WBoNIfCTJ1+cbzFU4NBAccOB0dbikoIRDN+x479NNwc0hWE7kCUzSU8cN0o+AqjJJ/2gpRoaS0YZh0qiQvtWdrpNHoox2iYLdbn07BRJXM3iap0XH3OI4qOfzqv1/0odwzkb/+nrwBRDKGtruNPgbw9GD8jATP9FlI=
+    secure: IfbqLN5HLVTmhpNuidiqAPLG0HxiELEeT9ZrRZj4tQvY6R7hAtdCtepIstjsGdglx3DF1brCkUWy9AaelHmoNt5eRtZ0/Q5VZffVRIaAA4nn0cy7eEgq4X/VEQ78ceaur1zhZ5HikfhkTQbMIhbJnYjOrcmEnIlY4uBd/a6U0VY=
   file: build/libs/xld-ssis-plugin-2.0.1.jar
   skip_cleanup: true
   on:
